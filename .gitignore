@@ -1,6 +1,7 @@
 # Environment
 .env
 .env.*
+!.env.example
 
 # Dependencies
 **/node_modules/
@@ -8,6 +9,7 @@ backend/vendor/
 
 # Build output
 frontend/dist/
+frontend/.vite/
 
 # Logs
 **/npm-debug.log*
