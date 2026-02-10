@@ -21,10 +21,21 @@ public function store(Request $request)
         'quantity'   => 'integer|min:1'
     ]);
 
-    $cartItem = CartItem::updateOrCreate(
-        ['user_id' => $request->user()->id, 'product_id' => $data['product_id']],
-        ['quantity' => DB::raw('quantity + ' . ($data['quantity'] ?? 1))]
-    );
+    $qty = $data['quantity'] ?? 1;
+
+    $cartItem = CartItem::where('user_id', $request->user()->id)
+        ->where('product_id', $data['product_id'])
+        ->first();
+
+    if ($cartItem) {
+        $cartItem->update(['quantity' => $cartItem->quantity + $qty]);
+    } else {
+        $cartItem = CartItem::create([
+            'user_id'    => $request->user()->id,
+            'product_id' => $data['product_id'],
+            'quantity'   => $qty,
+        ]);
+    }
 
     return $cartItem->load('product');
 }
